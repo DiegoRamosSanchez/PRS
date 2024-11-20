@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import pe.edu.vallegrande.database.model.CommunityEnvironment;
 
 @Repository
-public interface CommunityEnvironmentRepository extends ReactiveCrudRepository<CommunityEnvironment, Long> {
+public interface CommunityEnvironmentRepository extends ReactiveCrudRepository<CommunityEnvironment, Integer> {
      
 }

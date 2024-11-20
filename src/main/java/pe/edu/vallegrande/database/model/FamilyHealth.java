@@ -13,7 +13,7 @@ import lombok.Data;
 @Table("family_health")
 public class FamilyHealth {
     @Id
-    private Long id;
+    private Integer id;
     
     @Column("safe_type")
     private String safeType;
@@ -21,6 +21,7 @@ public class FamilyHealth {
     @Column("family_disease")
     private String familyDisease;
     
+    @Column("treatment")
     private String treatment;
     
     @Column("antecedentes_enfermedad")

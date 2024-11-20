@@ -13,7 +13,7 @@ import lombok.Data;
 @Table("family_feeding")
 public class FamilyFeeding {
     @Id
-    private Long id;
+    private Integer id;
     
     @Column("frecuencia_semanal")
     private String frecuenciaSemanal;

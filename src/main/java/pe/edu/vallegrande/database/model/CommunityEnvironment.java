@@ -13,7 +13,7 @@ import lombok.Data;
 @Table("community_environment")
 public class CommunityEnvironment {
     @Id
-    private Long id;
+    private Integer id;
     
     @Column("area")
     private String area;

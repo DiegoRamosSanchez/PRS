@@ -4,6 +4,6 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 
 import pe.edu.vallegrande.database.model.HousingDistribution;
 
-public interface HousingDistributionRepository extends ReactiveCrudRepository<HousingDistribution,Long> {
+public interface HousingDistributionRepository extends ReactiveCrudRepository<HousingDistribution, Integer> {
     
 }

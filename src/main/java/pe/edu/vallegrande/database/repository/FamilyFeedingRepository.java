@@ -4,6 +4,6 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 
 import pe.edu.vallegrande.database.model.FamilyFeeding;
 
-public interface FamilyFeedingRepository extends ReactiveCrudRepository<FamilyFeeding, Long> {
+public interface FamilyFeedingRepository extends ReactiveCrudRepository<FamilyFeeding, Integer> {
     
 }

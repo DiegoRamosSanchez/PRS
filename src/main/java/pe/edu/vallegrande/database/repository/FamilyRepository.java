@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import pe.edu.vallegrande.database.model.Family;
 
 @Repository
-public interface FamilyRepository extends ReactiveCrudRepository<Family, Long> {
+public interface FamilyRepository extends ReactiveCrudRepository<Family, Integer> {
      
 }

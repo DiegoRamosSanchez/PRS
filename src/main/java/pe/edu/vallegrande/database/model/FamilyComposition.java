@@ -13,7 +13,7 @@ import lombok.Data;
 @Table("family_composition")
 public class FamilyComposition {
     @Id
-    private Long id;
+    private Integer id;
     
     @Column("number_members")
     private Integer numberMembers;

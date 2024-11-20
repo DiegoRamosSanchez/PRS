@@ -13,7 +13,8 @@ import lombok.Data;
 @Table("labor_autonomy")
 public class LaborAutonomy {
     @Id
-    private Long id;
+    @Column("id")
+    private Integer id;
     
     @Column("number_rooms")
     private Integer numberRooms;

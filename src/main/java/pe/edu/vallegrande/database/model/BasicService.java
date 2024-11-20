@@ -14,7 +14,7 @@ import lombok.Data;
 public class BasicService {
     @Id
     @Column("service_id")
-    private Long serviceId;
+    private Integer serviceId;
     
     @Column("water_service")
     private String waterService;

@@ -13,7 +13,7 @@ import lombok.Data;
 @Table("social_life")
 public class SocialLife {
     @Id
-    private Long id;
+    private Integer id;
 
     @Column("material")
     private String material;

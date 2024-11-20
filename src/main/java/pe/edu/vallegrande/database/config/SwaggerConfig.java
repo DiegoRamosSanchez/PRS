@@ -15,7 +15,7 @@ public class SwaggerConfig {
     @Bean
     public OpenAPI customOpenAPI() {
         // Establece la URL directamente
-        String serverUrl = "https://verbose-goggles-x5v9wq96wxq9h6qv5-8080.app.github.dev";
+        String serverUrl = "https://crispy-engine-jx54jvpxw5r2q59x-8080.app.github.dev";
 
         return new OpenAPI()
             .info(new Info()
