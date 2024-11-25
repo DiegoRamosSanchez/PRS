@@ -42,8 +42,8 @@ public class FamilyController {
     @PutMapping("/{id}")
     public Mono<ResponseEntity<FamilyDTO>> updateFamily(
             @PathVariable Integer id, 
-            @RequestBody Family family) {
-        return familyService.updateFamily(id, family) // Implementa este método en FamilyService
+            @RequestBody FamilyDTO familyDTO) {
+        return familyService.updateFamily(id, familyDTO)
             .map(updatedFamilyDTO -> ResponseEntity.ok(updatedFamilyDTO))
             .defaultIfEmpty(ResponseEntity.notFound().build());
     }

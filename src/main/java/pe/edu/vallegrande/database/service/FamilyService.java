@@ -161,16 +161,106 @@ public class FamilyService {
     }
 
     
-    public Mono<FamilyDTO> updateFamily(Integer id, Family family) {
+    public Mono<FamilyDTO> updateFamily(Integer id, FamilyDTO familyDTO) {
         return familyRepository.findById(id)
             .flatMap(existingFamily -> {
-                existingFamily.setDirection(family.getDirection());
-                existingFamily.setReasibAdmission(family.getReasibAdmission());
-                // Actualiza otros campos según sea necesario
+                // Actualiza los campos de la familia
+                existingFamily.setDirection(familyDTO.getDirection());
+                existingFamily.setReasibAdmission(familyDTO.getReasibAdmission());
+    
+                // Guarda la familia actualizada
                 return familyRepository.save(existingFamily);
             })
-            .flatMap(this::populateRelatedEntities);
-    }
+            .flatMap(updatedFamily -> {
+                // Actualiza las entidades relacionadas sin necesidad de IDs
+                return basicServiceRepository.findById(updatedFamily.getBasicServiceServiceId())
+                    .flatMap(existingBasicService -> {
+                        existingBasicService.setWaterService(familyDTO.getBasicService().getWaterService());
+                        existingBasicService.setServDrain(familyDTO.getBasicService().getServDrain());
+                        existingBasicService.setServLight(familyDTO.getBasicService().getServLight());
+                        existingBasicService.setServCable(familyDTO.getBasicService().getServCable());
+                        existingBasicService.setServGas(familyDTO.getBasicService().getServGas());
+                        return basicServiceRepository.save(existingBasicService);
+                    })
+                    .then(communityEnvironmentRepository.findById(updatedFamily.getCommunityEnvironmentId())
+                        .flatMap(existingCommunityEnvironment -> {
+                            existingCommunityEnvironment.setArea(familyDTO.getCommunityEnvironment().getArea());
+                            existingCommunityEnvironment.setReferenceLocation(familyDTO.getCommunityEnvironment().getReferenceLocation());
+                            existingCommunityEnvironment.setResidue(familyDTO.getCommunityEnvironment().getResidue());
+                            existingCommunityEnvironment.setPublicLighting(familyDTO.getCommunityEnvironment().getPublicLighting());
+                            existingCommunityEnvironment.setSecurity(familyDTO.getCommunityEnvironment().getSecurity());
+                            return communityEnvironmentRepository.save(existingCommunityEnvironment);
+                        })
+                    )
+                    .then(familyCompositionRepository.findById(updatedFamily.getFamilyCompositionId())
+                        .flatMap(existingFamilyComposition -> {
+                            existingFamilyComposition.setNumberMembers(familyDTO.getFamilyComposition().getNumberMembers());
+                            existingFamilyComposition.setNumberChildren(familyDTO.getFamilyComposition().getNumberChildren());
+                            existingFamilyComposition.setFamilyType(familyDTO.getFamilyComposition().getFamilyType());
+                            existingFamilyComposition.setSocialProblems(familyDTO.getFamilyComposition().getSocialProblems());
+                            return familyCompositionRepository.save(existingFamilyComposition);
+                        })
+                    )
+                    .then(familyFeedingRepository.findById(updatedFamily.getFamilyFeedingId())
+                        .flatMap(existingFamilyFeeding -> {
+                            existingFamilyFeeding.setFrecuenciaSemanal(familyDTO.getFamilyFeeding().getFrecuenciaSemanal());
+                            existingFamilyFeeding.setTipoAlimentacion(familyDTO.getFamilyFeeding().getTipoAlimentacion());
+                            return familyFeedingRepository.save(existingFamilyFeeding);
+                        })
+                    )
+                    .then(familyHealthRepository.findById(updatedFamily.getFamilyHealthId())
+                        .flatMap(existingFamilyHealth -> {
+                            existingFamilyHealth.setSafeType(familyDTO.getFamilyHealth().getSafeType());
+                            existingFamilyHealth.setFamilyDisease(familyDTO.getFamilyHealth().getFamilyDisease());
+                            existingFamilyHealth.setTreatment(familyDTO.getFamilyHealth().getTreatment());
+                            existingFamilyHealth.setAntecedentesEnfermedad(familyDTO.getFamilyHealth().getAntecedentesEnfermedad());
+                            existingFamilyHealth.setExamenMedico(familyDTO.getFamilyHealth().getExamenMedico());
+                            return familyHealthRepository.save(existingFamilyHealth);
+                        })
+                    )
+                    .then(housingDistributionRepository.findById(updatedFamily.getHousingDistributionId())
+                        .flatMap(existingHousingDistribution -> {
+                            existingHousingDistribution.setAmbienteHogar(familyDTO.getHousingDistribution().getAmbienteHogar());
+                            existingHousingDistribution.setNumeroDormitorio(familyDTO.getHousingDistribution().getNumeroDormitorio());
+                            existingHousingDistribution.setHabitabilidad(familyDTO.getHousingDistribution().getHabitabilidad());
+                            return housingDistributionRepository.save(existingHousingDistribution);
+                        })
+                    )
+                    .then(housingEnvironmentRepository.findById(updatedFamily.getHousingEnvironmentId())
+                        .flatMap(existingHousingEnvironment -> {
+                            existingHousingEnvironment.setTenure(familyDTO.getHousingEnvironment().getTenure());
+                            existingHousingEnvironment.setTypeOfHousing(familyDTO.getHousingEnvironment().getTypeOfHousing());
+                            existingHousingEnvironment.setHousingMaterial(familyDTO.getHousingEnvironment().getHousingMaterial());
+                            existingHousingEnvironment.setHousingSecurity(familyDTO.getHousingEnvironment().getHousingSecurity());
+                            return housingEnvironmentRepository.save(existingHousingEnvironment);
+                        })
+                    )
+                    .then(laborAutonomyRepository.findById(updatedFamily.getLaborAutonomyId())
+                        .flatMap(existingLaborAutonomy -> {
+                            existingLaborAutonomy.setNumberRooms(familyDTO.getLaborAutonomy().getNumberRooms());
+                            existingLaborAutonomy.setNumberOfBedrooms(familyDTO.getLaborAutonomy().getNumberOfBedrooms());
+                            existingLaborAutonomy.setHabitabilityBuilding(familyDTO.getLaborAutonomy().getHabitabilityBuilding());
+                            return laborAutonomyRepository.save(existingLaborAutonomy);
+                        })
+                    )
+                    .then(socialLifeRepository.findById(updatedFamily.getSocialLifeId())
+                        .flatMap(existingSocialLife -> {
+                            existingSocialLife.setMaterial(familyDTO.getSocialLife().getMaterial());
+                            existingSocialLife.setFeeding(familyDTO.getSocialLife().getFeeding());
+                            existingSocialLife.setEconomic(familyDTO.getSocialLife().getEconomic());
+                            existingSocialLife.setSpiritual(familyDTO.getSocialLife().getSpiritual());
+                            existingSocialLife.setSocialCompany(familyDTO.getSocialLife().getSocialCompany());
+                            existingSocialLife.setGuideTip(familyDTO.getSocialLife().getGuideTip());
+                            return socialLifeRepository.save(existingSocialLife);
+                        })
+                    )
+                    .then(populateRelatedEntities(updatedFamily)); // Devuelve el DTO completo
+            })
+            .onErrorResume(e -> {
+                e.printStackTrace(); // Log full stack trace
+                return Mono.error(new RuntimeException("Error during family update: " + e.getMessage()));
+            });
+    }    
 
     public Mono<Void> deleteFamily(Integer id) {
         return familyRepository.deleteById(id);
