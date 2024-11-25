@@ -11,6 +11,7 @@ public class Family {
     private Integer id;
     private String direction;
     private String reasibAdmission;
+    private String status;
 
     // IDs de las entidades relacionadas
     private Integer basicServiceServiceId;

@@ -89,8 +89,13 @@ public class FamilyService {
     }
     
     // Método para obtener un listado general de FamilyDTO
-    public Flux<FamilyDTO> findAll() {
-        return familyRepository.findAll()
+    public Flux<FamilyDTO> findAllActive() {
+        return familyRepository.findAllByStatus("A")
+            .flatMap(this::populateRelatedEntities);
+    }
+
+    public Flux<FamilyDTO> findAllInactive() {
+        return familyRepository.findAllByStatus("I")
             .flatMap(this::populateRelatedEntities);
     }
 
@@ -141,6 +146,7 @@ public class FamilyService {
                 Family family = new Family();
                 family.setDirection(familyDTO.getDirection());
                 family.setReasibAdmission(familyDTO.getReasibAdmission());
+                family.setStatus("A");
                 family.setBasicServiceServiceId(familyDTO.getBasicService().getServiceId());
                 family.setCommunityEnvironmentId(familyDTO.getCommunityEnvironment().getId());
                 family.setFamilyCompositionId(familyDTO.getFamilyComposition().getId());
@@ -167,7 +173,8 @@ public class FamilyService {
                 // Actualiza los campos de la familia
                 existingFamily.setDirection(familyDTO.getDirection());
                 existingFamily.setReasibAdmission(familyDTO.getReasibAdmission());
-    
+                existingFamily.setStatus("A");
+
                 // Guarda la familia actualizada
                 return familyRepository.save(existingFamily);
             })

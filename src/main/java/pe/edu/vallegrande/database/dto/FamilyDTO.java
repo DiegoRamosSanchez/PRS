@@ -16,6 +16,7 @@ public class FamilyDTO {
     private Integer id;
     private String direction;
     private String reasibAdmission;
+    private String status;
 
     private BasicService basicService;
     private CommunityEnvironment communityEnvironment;

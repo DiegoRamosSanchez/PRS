@@ -4,7 +4,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pe.edu.vallegrande.database.dto.FamilyDTO;
-import pe.edu.vallegrande.database.model.Family;
 import pe.edu.vallegrande.database.service.FamilyService;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -19,9 +18,15 @@ public class FamilyController {
         this.familyService = familyService;
     }
 
-    @GetMapping
-    public ResponseEntity<Flux<FamilyDTO>> getAllFamilies() {
-        Flux<FamilyDTO> families = familyService.findAll();
+    @GetMapping("/active")
+    public ResponseEntity<Flux<FamilyDTO>> getAllActiveFamilies() {
+        Flux<FamilyDTO> families = familyService.findAllActive();
+        return ResponseEntity.status(HttpStatus.OK).body(families);
+    }
+
+    @GetMapping("/inactive")
+    public ResponseEntity<Flux<FamilyDTO>> getAllInactiveFamilies() {
+        Flux<FamilyDTO> families = familyService.findAllInactive();
         return ResponseEntity.status(HttpStatus.OK).body(families);
     }
 
