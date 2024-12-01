@@ -52,4 +52,28 @@ public class FamilyController {
             .map(updatedFamilyDTO -> ResponseEntity.ok(updatedFamilyDTO))
             .defaultIfEmpty(ResponseEntity.notFound().build());
     }
+
+    @PutMapping("/delete/{id}")
+    public Mono<ResponseEntity<Object>> deleteFamily(@PathVariable Integer id) {
+        return familyService.deleteFamily(id) // Cambia este método en tu servicio para manejar el eliminado lógico
+            .then(Mono.just(ResponseEntity.noContent().build()))
+            .onErrorResume(e -> {
+                if (e instanceof IllegalArgumentException) {
+                    return Mono.just(ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage()));
+                }
+                return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred"));
+            });
+    }
+
+    @PutMapping("/active/{id}")
+    public Mono<ResponseEntity<Object>> activeFamily(@PathVariable Integer id) {
+        return familyService.activeFamily(id) // Cambia este método en tu servicio para manejar el eliminado lógico
+            .then(Mono.just(ResponseEntity.noContent().build()))
+            .onErrorResume(e -> {
+                if (e instanceof IllegalArgumentException) {
+                    return Mono.just(ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage()));
+                }
+                return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred"));
+            });
+    }
 }
