@@ -7,7 +7,7 @@ import pe.edu.vallegrande.database.dto.FamilyDTO;
 import pe.edu.vallegrande.database.service.FamilyService;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/families")
 public class FamilyController {
@@ -32,7 +32,7 @@ public class FamilyController {
 
     @GetMapping("/{id}")
     public Mono<ResponseEntity<FamilyDTO>> getFamilyById(@PathVariable Integer id) {
-        return familyService.findById(id) // Implementa este método en FamilyService
+        return familyService.findById(id)
             .map(familyDTO -> ResponseEntity.ok(familyDTO))
             .defaultIfEmpty(ResponseEntity.notFound().build());
     }
