@@ -8,19 +8,19 @@ import { FamilyDTO } from '../familia/familiaDto';
   providedIn: 'root'
 })
 export class FamilyService {
-  private apiUrl = 'http://localhost:8080/api/families';
+  private apiUrl = 'https://musical-fishstick-jjq45w465g6v3p6pp-8080.app.github.dev/api/families';
 
   constructor(private http: HttpClient) { }
 
   // Obtener familias activas
-  getFamiliesActive(): Observable<FamilyDTO[]> {
+  getFamiliesActive(sortBy: string = 'id'): Observable<FamilyDTO[]> {
     return this.http.get<any>(`${this.apiUrl}/active`).pipe(
       map(response => Array.isArray(response) ? response : response.body || [])
     );
   }
 
   // Obtener familias inactivas
-  getFamiliesInactive(): Observable<FamilyDTO[]> {
+  getFamiliesInactive(sortBy: string = 'id'): Observable<FamilyDTO[]> {
     return this.http.get<any>(`${this.apiUrl}/inactive`).pipe(
       map(response => Array.isArray(response) ? response : response.body || [])
     );
@@ -49,6 +49,16 @@ export class FamilyService {
 
   // Eliminar familia
   deleteFamily(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+    return this.http.put<void>(`${this.apiUrl}/delete/${id}`, {}).pipe(
+      map(() => {})
+    );
   }
+
+  // Activar familia
+  activeFamily(id: number): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/active/${id}`, {}).pipe(
+      map(() => {})
+    );
+  }
+
 }

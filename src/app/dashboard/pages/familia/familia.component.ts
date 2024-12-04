@@ -3,14 +3,14 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule, HttpErrorResponse } from '@angular/common/http';
 import { FamilyDTO } from './familiaDto';
 import { FamilyService } from '../services/family.service';
-import { catchError } from 'rxjs/operators';
-import { of } from 'rxjs';
 import { FamiliaFormularioComponent } from './familia-formulario/familia-formulario.component';
+import { FormsModule } from '@angular/forms';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-familia',
   standalone: true,
-  imports: [CommonModule, HttpClientModule, FamiliaFormularioComponent],
+  imports: [CommonModule, FormsModule, HttpClientModule, FamiliaFormularioComponent],
   templateUrl: './familia.component.html',
   styleUrls: ['./familia.component.css']
 })
@@ -20,6 +20,8 @@ export class FamiliaComponent implements OnInit {
   loading = false;
   error: string | null = null;
   showFamilyForm = false;
+  searchTerm: string = '';
+  showInactive: boolean = false;
 
   constructor(private familyService: FamilyService) {}
 
@@ -29,22 +31,55 @@ export class FamiliaComponent implements OnInit {
 
   cargarFamiliasActivas() {
     this.loading = true;
-    this.familyService.getFamiliesActive()
-      .pipe(
-        catchError((error: HttpErrorResponse) => {
-          console.error('Error detallado:', error);
+    this.familyService.getFamiliesActive('id').subscribe(
+      data => {
+        this.familias = data;
+        this.loading = false;
+        this.error = null;
+      },
+      error => {
+        console.error('Error al obtener familias activas:', error);
+        this.error = this.procesarError(error);
+        this.loading = false;
+      }
+    );
+  }
+
+  toggleFamilias() {
+    this.filtrarFamilias();
+  }
+
+  filtrarFamilias() {
+    this.loading = true;
+    if (this.showInactive) {
+      this.familyService.getFamiliesInactive('id').subscribe(
+        data => {
+          this.familias = data.filter(familia =>
+            familia.direction.toLowerCase().includes(this.searchTerm.toLowerCase())
+          );
+          this.loading = false;
+        },
+        error => {
+          console.error('Error al obtener familias inactivas:', error);
           this.error = this.procesarError(error);
           this.loading = false;
-          return of([]); // Devuelve un array vacío en lugar de lanzar un error
-        })
-      )
-      .subscribe({
-        next: (data) => {
-          this.familias = data;
-          this.loading = false;
-          this.error = null;
         }
-      });
+      );
+    } else {
+      this.familyService.getFamiliesActive('id').subscribe(
+        data => {
+          this.familias = data.filter(familia =>
+            familia.direction.toLowerCase().includes(this.searchTerm.toLowerCase())
+          );
+          this.loading = false;
+        },
+        error => {
+          console.error('Error al obtener familias activas:', error);
+          this.error = this.procesarError(error);
+          this.loading = false;
+        }
+      );
+    }
   }
 
   private procesarError(error: HttpErrorResponse): string {
@@ -74,17 +109,54 @@ export class FamiliaComponent implements OnInit {
     this.showFamilyForm = true; // Abre el formulario para editar
   }
 
-  deleteFamily(id: number) {
-    if (confirm('¿Estás seguro de que deseas eliminar esta familia?')) {
-      this.familyService.deleteFamily(id).subscribe(
-        () => {
-          this.cargarFamiliasActivas(); // Recarga las familias después de eliminar
-        },
-        (error) => {
-          this.error = 'Error al eliminar la familia';
-        }
-      );
-    }
+  eliminarFamilia(id: number) {
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'Esta acción eliminará la familia de forma lógica.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, eliminar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.familyService.deleteFamily(id).subscribe(
+          () => {
+            Swal.fire('Eliminado', 'La familia ha sido eliminada.', 'success');
+            this.filtrarFamilias();
+          },
+          (error) => {
+            console.error('Error al eliminar la familia:', error);
+            Swal.fire('Error', 'Ocurrió un error al eliminar la familia.', 'error');
+          }
+        );
+      }
+    });
+  }
+
+  reactivarFamilia(id: number) {
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'Esta acción reactivará la familia.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, reactivar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.familyService.activeFamily(id).subscribe(
+          () => {
+            Swal.fire('Reactivado', 'La familia ha sido reactivada.', 'success');
+            this.filtrarFamilias();
+          },
+          (error) => {
+            console.error('Error al reactivar la familia:', error);
+            Swal.fire('Error', 'Ocurrió un error al reactivar la familia.', 'error');
+          }
+        );
+      }
+    });
   }
 
   getFamilyTypeColor(type: string): string {

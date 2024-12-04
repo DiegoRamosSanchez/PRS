@@ -1,143 +1,96 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { FamilyService } from '../../services/family.service';
+import { FamilyDTO } from '../familiaDto';
 
 @Component({
   selector: 'app-familia-formulario',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './familia-formulario.component.html',
   styleUrls: ['./familia-formulario.component.css']
 })
 export class FamiliaFormularioComponent {
+
   @Output() formClosed = new EventEmitter<void>();
-  @Output() familyCreated = new EventEmitter<any>();
 
-  currentStep = 1;
-  familyForm: FormGroup;
-  errorMessage: string | null = null;
-
-  constructor(private fb: FormBuilder) {
-    this.familyForm = this.fb.group({
-      // Información Básica de la Familia
-      basicInfo: this.fb.group({
-        direction: ['', [Validators.required]],
-        familyType: ['', [Validators.required]],
-        socialProblems: ['']
-      }),
-
-      // Composición Familiar
-      familyComposition: this.fb.group({
-        numberMembers: [0, [Validators.required, Validators.min(1)]],
-        numberChildren: [0, [Validators.required, Validators.min(0)]],
-        familyMembers: this.fb.array([])
-      }),
-
-      // Servicios Básicos
-      basicServices: this.fb.group({
-        waterService: [false],
-        servDrain: [false],
-        servLight: [false],
-        servCable: [false],
-        servGas: [false]
-      }),
-
-      // Ambiente Comunitario
-      communityEnvironment: this.fb.group({
-        area: [''],
-        referenceLocation: [''],
-        publicLighting: [false],
-        security: [false]
-      }),
-
-      // Salud Familiar
-      familyHealth: this.fb.group({
-        familyDisease: [''],
-        treatment: [''],
-        medicalExam: ['']
-      })
-    });
-  }
-
-  // Getter para familyMembers FormArray
-  get familyMembers() {
-    return (this.familyForm.get('familyComposition.familyMembers') as FormArray);
-  }
-
-  // Añadir miembro familiar
-  addFamilyMember() {
-    const memberForm = this.fb.group({
-      name: ['', Validators.required],
-      age: [null, [Validators.required, Validators.min(0)]],
-      relationship: ['', Validators.required]
-    });
-
-    this.familyMembers.push(memberForm);
-  }
-
-  // Eliminar miembro familiar
-  removeFamilyMember(index: number) {
-    this.familyMembers.removeAt(index);
-  }
-
-  // Navegación entre pasos
-  nextStep() {
-    if (this.validateCurrentStep()) {
-      this.currentStep++;
+  family: FamilyDTO = {
+    id: 0, // Este campo puede ser auto-generado por el backend
+    direction: '',
+    reasibAdmission: '',
+    status: 'A', // Estado por defecto
+    basicService: {
+      waterService: '',
+      servDrain: '',
+      servLight: '',
+      servCable: '',
+      servGas: ''
+    },
+    communityEnvironment: {
+      area: '',
+      referenceLocation: '',
+      residue: '',
+      publicLighting: '',
+      security: ''
+    },
+    familyComposition: {
+      numberMembers: 0,
+      numberChildren: 0,
+      familyType: '',
+      socialProblems: ''
+    },
+    familyFeeding: {
+      frecuenciaSemanal: '',
+      tipoAlimentacion: ''
+    },
+    familyHealth: {
+      safeType: '',
+      familyDisease: '',
+      treatment: '',
+      antecedentesEnfermedad: '',
+      examenMedico: ''
+    },
+    housingDistribution: {
+      ambienteHogar: 0,
+      numeroDormitorio: 0,
+      habitabilidad: ''
+    },
+    housingEnvironment: {
+      tenure: '',
+      typeOfHousing: '',
+      housingMaterial: '',
+      housingSecurity: ''
+    },
+    laborAutonomy: {
+      numberRooms: 0,
+      numberOfBedrooms: 0,
+      habitabilityBuilding: ''
+    },
+    socialLife: {
+      material: '',
+      feeding: '',
+      economic: '',
+      spiritual: '',
+      socialCompany: '',
+      guideTip: ''
     }
-  }
+  };
 
-  prevStep() {
-    if (this.currentStep > 1) {
-      this.currentStep--;
-    }
-  }
+  constructor(private familyService: FamilyService) {}
 
-  // Validación del paso actual
-  validateCurrentStep(): boolean {
-    const currentStepControls = this.getCurrentStepControls();
-    
-    if (currentStepControls) {
-      Object.keys(currentStepControls.controls).forEach(key => {
-        const control = currentStepControls.get(key);
-        control?.markAsTouched();
-      });
-
-      return currentStepControls.valid;
-    }
-    
-    return true;
-  }
-
-  // Obtener controles del paso actual
-  getCurrentStepControls(): FormGroup | null {
-    switch(this.currentStep) {
-      case 1: return this.familyForm.get('basicInfo') as FormGroup;
-      case 2: return this.familyForm.get('familyComposition') as FormGroup;
-      case 3: return this.familyForm.get('basicServices') as FormGroup;
-      case 4: return this.familyForm.get('communityEnvironment') as FormGroup;
-      case 5: return this.familyForm.get('familyHealth') as FormGroup;
-      default: return null;
-    }
-  }
-
-  // Validar si el paso actual es válido
-  isStepValid(): boolean {
-    return this.validateCurrentStep();
-  }
-
-  // Envío del formulario
-  onSubmit() {
-    if (this.familyForm.valid) {
-      console.log('Formulario completo:', this.familyForm.value);
-      this.familyCreated.emit(this.familyForm.value);
-      this.closeForm();
+  onSubmit(form: any) {
+    if (form.valid) {
+      this.familyService.createFamily(this.family).subscribe(
+        response => {
+          console.log('Familia creada:', response);
+        },
+        error => {
+          console.error('Error al crear la familia:', error);
+        }
+      );
     } else {
-      // Marcar todos los controles como tocados para mostrar errores
-      Object.keys(this.familyForm.controls).forEach(key => {
-        const control = this.familyForm.get(key);
-        control?.markAllAsTouched();
-      });
+      console.log('Formulario no válido');
     }
   }
 
@@ -148,6 +101,7 @@ export class FamiliaFormularioComponent {
 
   // Limpiar mensaje de error
   clearErrorMessage() {
-    this.errorMessage = null;
+    
   }
+  
 }
