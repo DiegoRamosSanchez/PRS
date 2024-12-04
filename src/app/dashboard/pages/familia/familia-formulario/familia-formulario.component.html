@@ -1,0 +1,186 @@
+<div class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+    <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full p-6">
+        <div class="flex justify-between items-center border-b pb-3">
+            <h2 class="text-2xl font-bold text-gray-900">Registro de Nueva Familia</h2>
+            <button (click)="closeForm()" class="text-gray-400 hover:text-gray-600 text-2xl">
+                ✕
+            </button>
+        </div>
+
+        <form [formGroup]="familyForm" (ngSubmit)="onSubmit()" class="mt-6">
+            <!-- Paso 1: Información Básica -->
+            <div *ngIf="currentStep === 1" formGroupName="basicInfo" class="space-y-4">
+                <h3 class="text-lg font-semibold mb-4">Información Básica</h3>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Dirección</label>
+                    <input type="text" formControlName="direction"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                    <p *ngIf="familyForm.get('basicInfo.direction')?.invalid && familyForm.get('basicInfo.direction')?.touched"
+                        class="text-red-500 text-sm mt-1">
+                        La dirección es requerida
+                    </p>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Tipo de Familia</label>
+                    <select formControlName="familyType"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                        <option value="">Seleccione un tipo</option>
+                        <option value="Nuclear">Nuclear</option>
+                        <option value="Extendida">Extendida</option>
+                        <option value="Monoparental">Monoparental</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Problemas Sociales (opcional)</label>
+                    <textarea formControlName="socialProblems"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"></textarea>
+                </div>
+            </div>
+
+            <!-- Paso 2: Composición Familiar -->
+            <div *ngIf="currentStep === 2" formGroupName="familyComposition" class="space-y-4">
+                <h3 class="text-lg font-semibold mb-4">Composición Familiar</h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Número de Miembros</label>
+                        <input type="number" formControlName="numberMembers"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Número de Niños</label>
+                        <input type="number" formControlName="numberChildren"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <h4 class="text-md font-medium mb-2">Miembros de la Familia</h4>
+                    <div formArrayName="familyMembers">
+                        <div *ngFor="let member of familyMembers.controls; let i = index" [formGroupName]="i"
+                            class="grid grid-cols-3 gap-4 mb-2">
+                            <input type="text" formControlName="name" placeholder="Nombre"
+                                class="rounded-md border-gray-300">
+                            <input type="number" formControlName="age" placeholder="Edad"
+                                class="rounded-md border-gray-300">
+                            <div class="flex items-center">
+                                <input type="text" formControlName="relationship" placeholder="Parentesco"
+                                    class="rounded-md border-gray-300 mr-2">
+                                <button type="button" (click)="removeFamilyMember(i)"
+                                    class="text-red-500 hover:text-red-700">
+                                    ✕
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" (click)="addFamilyMember()"
+                        class="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                        Añadir Miembro
+                    </button>
+                </div>
+            </div>
+
+            <!-- Paso 3: Servicios Básicos -->
+            <div *ngIf="currentStep === 3" formGroupName="basicServices" class="space-y-4">
+                <h3 class="text-lg font-semibold mb-4">Servicios Básicos</h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="flex items-center">
+                        <input type="checkbox" formControlName="waterService" class="mr-2">
+                        <label>Servicio de Agua</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input type="checkbox" formControlName="servDrain" class="mr-2">
+                        <label>Alcantarillado</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input type="checkbox" formControlName="servLight" class="mr-2">
+                        <label>Servicio Eléctrico</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input type="checkbox" formControlName="servCable" class="mr-2">
+                        <label>Cable/Internet</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input type="checkbox" formControlName="servGas" class="mr-2">
+                        <label>Gas</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Paso 4: Ambiente Comunitario -->
+            <div *ngIf="currentStep === 4" formGroupName="communityEnvironment" class="space-y-4">
+                <h3 class="text-lg font-semibold mb-4">Ambiente Comunitario</h3>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Área</label>
+                    <input type="text" formControlName="area"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Ubicación de Referencia</label>
+                    <input type="text" formControlName="referenceLocation"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center">
+                        <input type="checkbox" formControlName="publicLighting" class="mr-2">
+                        <label>Iluminación Pública</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input type="checkbox" formControlName="security" class="mr-2">
+                        <label>Seguridad</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Paso 5: Salud Familiar -->
+            <div *ngIf="currentStep === 5" formGroupName="familyHealth" class="space-y-4">
+                <h3 class="text-lg font-semibold mb-4">Salud Familiar</h3>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Enfermedades Familiares</label>
+                    <textarea formControlName="familyDisease"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Tratamientos</label>
+                    <textarea formControlName="treatment"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Examen Médico</label>
+                    <textarea formControlName="medicalExam"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"></textarea>
+                </div>
+            </div>
+            <!-- Navegación de Pasos -->
+            <div class="flex justify-between mt-6">
+                <button *ngIf="currentStep > 1" type="button" (click)="prevStep()"
+                    class="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400">
+                    Anterior
+                </button>
+                <button *ngIf="currentStep < 5" type="button" (click)="nextStep()" [disabled]="!isStepValid()"
+                    class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed">
+                    Siguiente
+                </button>
+                <button *ngIf="currentStep === 5" type="submit" [disabled]="!familyForm.valid"
+                    class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed">
+                    Registrar Familia
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Optional: Error Modal -->
+<div *ngIf="errorMessage" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+    <div class="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+        <div class="flex justify-between items-center border-b pb-3">
+            <h2 class="text-xl font-bold text-red-600">Error</h2>
+            <button (click)="clearErrorMessage()" class="text-gray-400 hover:text-gray-600 text-2xl">
+                ✕
+            </button>
+        </div>
+        <p class="mt-4 text-gray-700">{{ errorMessage }}</p>
+        <button (click)="clearErrorMessage()" class="mt-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
+            Cerrar
+        </button>
+    </div>
+</div>

@@ -1,91 +1,70 @@
-// family.dto.ts
 export interface FamilyDTO {
     id: number;
     direction: string;
     reasibAdmission: string;
     status: string;
-    basicService: BasicService;
-    communityEnvironment: CommunityEnvironment;
-    familyComposition: FamilyComposition;
-    familyFeeding: FamilyFeeding;
-    familyHealth: FamilyHealth;
-    housingDistribution: HousingDistribution;
-    housingEnvironment: HousingEnvironment;
-    laborAutonomy: LaborAutonomy;
-    socialLife: SocialLife;
-}
-
-export interface BasicService {
-    serviceId: number;
-    waterService: boolean;
-    servDrain: boolean;
-    servLight: boolean;
-    servCable: boolean;
-    servGas: boolean;
-}
-
-export interface CommunityEnvironment {
-    id: number;
-    area: string;
-    referenceLocation: string;
-    residue: boolean;
-    publicLighting: boolean;
-    security: boolean;
-}
-
-export interface FamilyComposition{
-    id: number;
-    numbreChildren: number;
-    SocialLife: string;
-    socialProblems:string
-}
-
-export interface FamilyFeeding{
-    id: number;
-    frecuenciaSemanal: string;
-    tipoAlimentacion: string
-}
-
-export interface FamilyHealth{
-    id: number;
-    safeType: string;
-    familyDisease: string;
-    treatment: string;
-    antecedentesEnfermedad: string;
-    examenMedico: string
-}
-
-export interface HousingDistribution{
-    id: number;
-    ambienteHogar: number;
-    numeroDormitorio: number;
-    habitabilidad: string
-}
-
-export interface HousingEnvironment{
-    id: number;
-    tenure: string;
-    typeOfHousing: string;
-    housingMaterial: string;
-    housingSecurity: string
-}
-
-export interface LaborAutonomy{
-    id: number;
-    numberRooms: number;
-    numberOfBedrooms: number
-    habitabilityBuilding: string
-}
-
-
-export interface SocialLife{
-    id: number;
-    material: string;
-    feeding: string;
-    economic: string;
-    spiritual: string;
-    socialCompany: string;
-    guideTip: string
-}
-
-
+    basicService: {
+      serviceId: number;
+      waterService: string;
+      servDrain: string;
+      servLight: string;
+      servCable: string;
+      servGas: string;
+    };
+    communityEnvironment: {
+      id: number;
+      area: string;
+      referenceLocation: string;
+      residue: string;
+      publicLighting: string;
+      security: string;
+    };
+    familyComposition: {
+      id: number;
+      numberMembers: number;
+      numberChildren: number;
+      familyType: string;
+      socialProblems: string;
+    };
+    familyFeeding: {
+      id: number;
+      frecuenciaSemanal: string;
+      tipoAlimentacion: string;
+    };
+    familyHealth: {
+      id: number;
+      safeType: string;
+      familyDisease: string;
+      treatment: string;
+      antecedentesEnfermedad: string;
+      examenMedico: string;
+    };
+    housingDistribution: {
+      id: number;
+      ambienteHogar: number;
+      numeroDormitorio: number;
+      habitabilidad: string;
+    };
+    housingEnvironment: {
+      id: number;
+      tenure: string;
+      typeOfHousing: string;
+      housingMaterial: string;
+      housingSecurity: string;
+    };
+    laborAutonomy: {
+      id: number;
+      numberRooms: number;
+      numberOfBedrooms: number;
+      habitabilityBuilding: string;
+    };
+    socialLife: {
+      id: number;
+      material: string;
+      feeding: string;
+      economic: string;
+      spiritual: string;
+      socialCompany: string;
+      guideTip: string;
+    };
+  }
