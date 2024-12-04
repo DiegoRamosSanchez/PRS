@@ -84,12 +84,12 @@
                      focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 ml-2">
               Editar
             </button>
-            <button  *ngIf="!showInactive" (click)="eliminarFamilia(familia.id)" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium 
+            <button *ngIf="!showInactive" (click)="eliminarFamilia(familia.id)" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium 
                      rounded-full shadow-sm text-white bg-red-600 hover:bg-red-700 
                      focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 ml-2">
               Borrar
             </button>
-            <button  *ngIf="showInactive" (click)="reactivarFamilia(familia.id)" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium 
+            <button *ngIf="showInactive" (click)="reactivarFamilia(familia.id)" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium 
                     rounded-full shadow-sm text-white bg-blue-500 hover:bg-blue-600 
                     focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ml-2">
               Reactivar
@@ -117,36 +117,49 @@
 
 <!-- Modal de Detalles de Familia -->
 <div *ngIf="familySelected" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-  <div class="bg-white rounded-lg shadow-xl max-w-lg w-full p-6">
-    <div class="flex justify-between items-center border-b pb-3">
-      <h2 class="text-xl font-semibold text-gray-900">Detalles de la Familia</h2>
-      <button (click)="familySelected = null" class="text-gray-400 hover:text-gray-600">
-        ✕
+  <div class="bg-white rounded-lg shadow-2xl max-w-lg w-full">
+    <div class="bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-t-lg py-4 px-6 flex justify-between items-center">
+      <h2 class="text-2xl font-bold">Detalles de la Familia</h2>
+      <button (click)="familySelected = null" class="text-white hover:text-gray-300 transition duration-200">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
       </button>
     </div>
-    <div class="mt-4 space-y-3">
-      <div class="grid grid-cols-2 gap-4">
-        <div>
-          <p class="text-sm font-medium text-gray-600">Dirección</p>
-          <p class="text-gray-900">{{ familySelected.direction }}</p>
+    <div class="p-6 space-y-5">
+      <div class="grid grid-cols-1 gap-4">
+        <div *ngIf="currentSection === 1">
+          <div class="rounded-lg shadow-md p-4">
+            <h3 class="text-lg font-semibold text-gray-700 mb-2">Información Básica</h3>
+            <ul class="list-disc pl-5">
+              <li><strong>Dirección Familia:</strong> {{ familySelected.direction }}</li>
+              <li><strong>Tipo de familia:</strong> {{ familySelected.familyComposition.familyType }}</li>
+              <li><strong>Número de Miembros:</strong> {{ familySelected.familyComposition.numberMembers }}</li>
+              <li><strong>Número Hijos:</strong> {{ familySelected.familyComposition.numberChildren }}</li>
+            </ul>
+          </div>
         </div>
-        <div>
-          <p class="text-sm font-medium text-gray-600">Tipo de Familia</p>
-          <p class="text-gray-900">{{ familySelected.familyComposition.familyType }}</p>
-        </div>
-        <div>
-          <p class="text-sm font-medium text-gray-600">Miembros</p>
-          <p class="text-gray-900">{{ familySelected.familyComposition.numberMembers }}</p>
-        </div>
-        <div>
-          <p class="text-sm font-medium text-gray-600">Niños</p>
-          <p class="text-gray-900">{{ familySelected.familyComposition.numberChildren }}</p>
+        <div *ngIf="currentSection === 2">
+          <div class="rounded-lg shadow-md p-4">
+            <h3 class="text-lg font-semibold text-gray-700 mb-2">Servicios Básicos</h3>
+            <ul class="list-disc pl-5">
+              <li><strong>Servicio de Agua:</strong> {{ familySelected.basicService.waterService }}</li>
+              <li><strong>Servicio de Drenaje:</strong> {{ familySelected.basicService.servDrain }}</li>
+              <li><strong>Servicio de Luz:</strong> {{ familySelected.basicService.servLight }}</li>
+              <li><strong>Servicio de Cable:</strong> {{ familySelected.basicService.servCable }}</li>
+              <li><strong>Servicio de Gas:</strong> {{ familySelected.basicService.servGas }}</li>
+            </ul>
+          </div>
         </div>
       </div>
-      <div>
-        <p class="text-sm font-medium text-gray-600">Problemas Sociales</p>
-        <p class="text-gray-900">{{ familySelected.familyComposition.socialProblems || 'Sin problemas reportados' }}</p>
-      </div>
+    </div>
+    <div class="flex justify-between rounded-b-lg py-3 px-6">
+      <button type="button" class="btn btn-secondary" (click)="previousSection()" [disabled]="currentSection === 1">
+        Atrás
+      </button>
+      <button type="button" class="btn btn-primary" (click)="nextSection()" [disabled]="currentSection === 3">
+        Siguiente
+      </button>
     </div>
   </div>
 </div>

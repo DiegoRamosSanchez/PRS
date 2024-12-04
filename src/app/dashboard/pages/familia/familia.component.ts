@@ -22,6 +22,7 @@ export class FamiliaComponent implements OnInit {
   showFamilyForm = false;
   searchTerm: string = '';
   showInactive: boolean = false;
+  currentSection: number = 1;
 
   constructor(private familyService: FamilyService) {}
 
@@ -107,6 +108,18 @@ export class FamiliaComponent implements OnInit {
   editFamily(familia: FamilyDTO) {
     this.familySelected = familia; // Establece la familia seleccionada para editar
     this.showFamilyForm = true; // Abre el formulario para editar
+  }
+
+  nextSection() {
+    if (this.currentSection < 3) {
+      this.currentSection++;
+    }
+  }
+
+  previousSection() {
+    if (this.currentSection > 1) {
+      this.currentSection--;
+    }
   }
 
   eliminarFamilia(id: number) {
