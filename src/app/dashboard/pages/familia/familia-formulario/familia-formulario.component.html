@@ -299,7 +299,14 @@
                 </div>
             </div>
 
-            <button type="submit" class="btn btn-primary">Guardar</button>
+            <div class="flex justify-between rounded-b-lg py-3 px-6">
+                <button class="btn btn-secondary" (click)="closeForm()">
+                    Cancelar
+                </button>
+                <button type="submit" class="btn btn-primary">
+                    Guardar
+                </button>
+            </div>
         </form>
         
     </div>

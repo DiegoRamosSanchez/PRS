@@ -8,7 +8,7 @@ import { FamilyDTO } from '../familia/familiaDto';
   providedIn: 'root'
 })
 export class FamilyService {
-  private apiUrl = 'https://musical-fishstick-jjq45w465g6v3p6pp-8080.app.github.dev/api/families';
+  private apiUrl = 'https://bookish-pancake-wrg97j967xjpf5g69-8080.app.github.dev/api/families';
 
   constructor(private http: HttpClient) { }
 

@@ -151,6 +151,18 @@
             </ul>
           </div>
         </div>
+        <div *ngIf="currentSection === 3">
+          <div class="rounded-lg shadow-md p-4">
+            <h3 class="text-lg font-semibold text-gray-700 mb-2">Comunidad - Medio Ambiente</h3>
+            <ul class="list-disc pl-5">
+              <li><strong>Área:</strong> {{ familySelected.communityEnvironment.area }}</li>
+              <li><strong>Ubicación de referencia:</strong> {{ familySelected.communityEnvironment.referenceLocation }}</li>
+              <li><strong>Residuo:</strong> {{ familySelected.communityEnvironment.residue }}</li>
+              <li><strong>Iluminación pública:</strong> {{ familySelected.communityEnvironment.publicLighting }}</li>
+              <li><strong>seguridad:</strong> {{ familySelected.communityEnvironment.security }}</li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
     <div class="flex justify-between rounded-b-lg py-3 px-6">

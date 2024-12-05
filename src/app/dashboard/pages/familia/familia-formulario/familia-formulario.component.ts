@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { FamilyService } from '../../services/family.service';
 import { FamilyDTO } from '../familiaDto';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-familia-formulario',
@@ -13,6 +14,7 @@ import { FamilyDTO } from '../familiaDto';
 })
 export class FamiliaFormularioComponent {
 
+  @Output() familyCreated = new EventEmitter<FamilyDTO>();
   @Output() formClosed = new EventEmitter<void>();
 
   family: FamilyDTO = {
@@ -84,9 +86,25 @@ export class FamiliaFormularioComponent {
       this.familyService.createFamily(this.family).subscribe(
         response => {
           console.log('Familia creada:', response);
+          this.familyCreated.emit(response);
+          Swal.fire({
+            title: 'Éxito!',
+            text: 'Registro creado exitosamente!',
+            icon: 'success',
+            confirmButtonText: 'Aceptar'
+          }).then(() => {
+            this.resetForm();
+            this.closeForm();
+          });
         },
         error => {
           console.error('Error al crear la familia:', error);
+          Swal.fire({
+            title: 'Error!',
+            text: 'Ocurrió un error al crear el registro.',
+            icon: 'error',
+            confirmButtonText: 'Aceptar'
+          });
         }
       );
     } else {
@@ -94,14 +112,72 @@ export class FamiliaFormularioComponent {
     }
   }
 
-  // Cerrar formulario
-  closeForm() {
-    this.formClosed.emit();
+  resetForm() {
+    this.family = {
+      id: 0,
+      direction: '',
+      reasibAdmission: '',
+      status: 'A',
+      basicService: {
+        waterService: '',
+        servDrain: '',
+        servLight: '',
+        servCable: '',
+        servGas: ''
+      },
+      communityEnvironment: {
+        area: '',
+        referenceLocation: '',
+        residue: '',
+        publicLighting: '',
+        security: ''
+      },
+      familyComposition: {
+        numberMembers: 0,
+        numberChildren: 0,
+        familyType: '',
+        socialProblems: ''
+      },
+      familyFeeding: {
+        frecuenciaSemanal: '',
+        tipoAlimentacion: ''
+      },
+      familyHealth: {
+        safeType: '',
+        familyDisease: '',
+        treatment: '',
+        antecedentesEnfermedad: '',
+        examenMedico: ''
+      },
+      housingDistribution: {
+        ambienteHogar: 0,
+        numeroDormitorio: 0,
+        habitabilidad: ''
+      },
+      housingEnvironment: {
+        tenure: '',
+        typeOfHousing: '',
+        housingMaterial: '',
+        housingSecurity: ''
+      },
+      laborAutonomy: {
+        numberRooms: 0,
+        numberOfBedrooms: 0,
+        habitabilityBuilding: ''
+      },
+      socialLife: {
+        material: '',
+        feeding: '',
+        economic: '',
+        spiritual: '',
+        socialCompany: '',
+        guideTip: ''
+      }
+    };
   }
 
-  // Limpiar mensaje de error
-  clearErrorMessage() {
-    
+  closeForm() {
+    this.formClosed.emit();
   }
   
 }
