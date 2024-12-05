@@ -30,6 +30,13 @@ public class FamilyController {
         return ResponseEntity.status(HttpStatus.OK).body(families);
     }
 
+    @GetMapping("/detail/{id}")
+    public Mono<ResponseEntity<FamilyDTO>> getFamilyDetailById(@PathVariable Integer id) {
+        return familyService.findDetailById(id)
+                .map(familyDTO -> ResponseEntity.ok(familyDTO))
+                .defaultIfEmpty(ResponseEntity.notFound().build());
+    }
+
     @GetMapping("/{id}")
     public Mono<ResponseEntity<FamilyDTO>> getFamilyById(@PathVariable Integer id) {
         return familyService.findById(id)

@@ -286,4 +286,9 @@ public class FamilyService {
             });
     }
 
+    public Mono<FamilyDTO> findDetailById(Integer id) {
+        return familyRepository.findById(id)
+                .flatMap(this::populateRelatedEntities);
+    }
+
 }
