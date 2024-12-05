@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClientModule, HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { FamilyDTO } from './familiaDto';
 import { FamilyService } from '../services/family.service';
 import { FamiliaFormularioComponent } from './familia-formulario/familia-formulario.component';
@@ -10,7 +10,7 @@ import Swal from 'sweetalert2';
 @Component({
   selector: 'app-familia',
   standalone: true,
-  imports: [CommonModule, FormsModule, HttpClientModule, FamiliaFormularioComponent],
+  imports: [CommonModule, FormsModule, FamiliaFormularioComponent],
   templateUrl: './familia.component.html',
   styleUrls: ['./familia.component.css']
 })
@@ -52,35 +52,23 @@ export class FamiliaComponent implements OnInit {
 
   filtrarFamilias() {
     this.loading = true;
-    if (this.showInactive) {
-      this.familyService.getFamiliesInactive('id').subscribe(
-        data => {
-          this.familias = data.filter(familia =>
-            familia.direction.toLowerCase().includes(this.searchTerm.toLowerCase())
-          );
-          this.loading = false;
-        },
-        error => {
-          console.error('Error al obtener familias inactivas:', error);
-          this.error = this.procesarError(error);
-          this.loading = false;
-        }
-      );
-    } else {
-      this.familyService.getFamiliesActive('id').subscribe(
-        data => {
-          this.familias = data.filter(familia =>
-            familia.direction.toLowerCase().includes(this.searchTerm.toLowerCase())
-          );
-          this.loading = false;
-        },
-        error => {
-          console.error('Error al obtener familias activas:', error);
-          this.error = this.procesarError(error);
-          this.loading = false;
-        }
-      );
-    }
+    const request = this.showInactive ? 
+      this.familyService.getFamiliesInactive('id') : 
+      this.familyService.getFamiliesActive('id');
+
+    request.subscribe(
+      data => {
+        this.familias = data.filter(familia =>
+          familia.direction.toLowerCase().includes(this.searchTerm.toLowerCase())
+        );
+        this.loading = false;
+      },
+      error => {
+        console.error('Error al obtener familias:', error);
+        this.error = this.procesarError(error);
+        this.loading = false;
+      }
+    );
   }
 
   private procesarError(error: HttpErrorResponse): string {
@@ -106,10 +94,10 @@ export class FamiliaComponent implements OnInit {
   }
 
   editFamily(familia: FamilyDTO) {
-    this.familySelected = familia; // Establece la familia seleccionada para editar
-    this.showFamilyForm = true; // Abre el formulario para editar
+    this.familySelected = familia; // Asignar la familia seleccionada
+    this.showFamilyForm = true; // Mostrar el formulario
   }
-
+  
   nextSection() {
     if (this.currentSection < 3) {
       this.currentSection++;

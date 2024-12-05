@@ -176,8 +176,11 @@
   </div>
 </div>
 
+
 <!-- Modal para el Formulario de Nueva Familia -->
 <div *ngIf="showFamilyForm" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-  <app-familia-formulario (formClosed)="showFamilyForm = false"
+  <app-familia-formulario 
+    [familyToEdit]="familySelected" 
+    (formClosed)="showFamilyForm = false"
     (familyCreated)="onFamilyCreated($event)"></app-familia-formulario>
 </div>

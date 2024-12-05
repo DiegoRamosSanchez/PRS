@@ -8,48 +8,48 @@ import { FamilyDTO } from '../familia/familiaDto';
   providedIn: 'root'
 })
 export class FamilyService {
-  private apiUrl = 'https://bookish-pancake-wrg97j967xjpf5g69-8080.app.github.dev/api/families';
+  private apiUrl = 'http://localhost:8080/api/families';
 
   constructor(private http: HttpClient) { }
 
   // Obtener familias activas
   getFamiliesActive(sortBy: string = 'id'): Observable<FamilyDTO[]> {
-    return this.http.get<any>(`${this.apiUrl}/active`).pipe(
-      map(response => Array.isArray(response) ? response : response.body || [])
+    return this.http.get<FamilyDTO[]>(`${this.apiUrl}/active`).pipe(
+      map(response => response || [])
     );
   }
 
   // Obtener familias inactivas
   getFamiliesInactive(sortBy: string = 'id'): Observable<FamilyDTO[]> {
-    return this.http.get<any>(`${this.apiUrl}/inactive`).pipe(
-      map(response => Array.isArray(response) ? response : response.body || [])
+    return this.http.get<FamilyDTO[]>(`${this.apiUrl}/inactive`).pipe(
+      map(response => response || [])
     );
   }
 
   // Obtener familia por ID
   getFamilyById(id: number): Observable<FamilyDTO> {
-    return this.http.get<any>(`${this.apiUrl}/${id}`).pipe(
-      map(response => response.body || response)
+    return this.http.get<FamilyDTO>(`${this.apiUrl}/${id}`).pipe(
+      map(response => response)
     );
   }
 
   // Crear nueva familia
   createFamily(family: FamilyDTO): Observable<FamilyDTO> {
-    return this.http.post<any>(this.apiUrl, family).pipe(
-      map(response => response.body || response)
+    return this.http.post<FamilyDTO>(this.apiUrl, family).pipe(
+      map(response => response)
     );
   }
 
   // Actualizar familia
   updateFamily(id: number, family: FamilyDTO): Observable<FamilyDTO> {
-    return this.http.put<any>(`${this.apiUrl}/${id}`, family).pipe(
-      map(response => response.body || response)
+    return this.http.put<FamilyDTO>(`${this.apiUrl}/${id}`, family).pipe(
+      map(response => response)
     );
   }
 
   // Eliminar familia
   deleteFamily(id: number): Observable<void> {
-    return this.http.put<void>(`${this.apiUrl}/delete/${id}`, {}).pipe(
+    return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
       map(() => {})
     );
   }
@@ -60,5 +60,4 @@ export class FamilyService {
       map(() => {})
     );
   }
-
 }
