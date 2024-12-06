@@ -8,5 +8,9 @@ FROM eclipse-temurin:17-jdk-alpine
 WORKDIR /app
 COPY --from=builder /app/target/*.jar app.jar
 
+ENV DATABASE_URL=${DATABASE_URL} \
+    DATABASE_USERNAME=${DATABASE_USERNAME} \
+    DATABASE_PASSWORD=${DATABASE_PASSWORD}
+
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]

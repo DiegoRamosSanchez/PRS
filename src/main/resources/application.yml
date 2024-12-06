@@ -3,9 +3,9 @@ spring:
     name: database
 
   r2dbc:
-    url: r2dbc:postgresql://neondb_owner:HPX6oUdLnR1G@ep-young-morning-a492t7vp.us-east-1.aws.neon.tech:5432/neondb?sslmode=require
-    username: neondb_owner
-    password: HPX6oUdLnR1G
+    url: ${DATABASE_URL} #r2dbc:postgresql://ep-young-morning-a492t7vp.us-east-1.aws.neon.tech:5432/neondb?sslmode=require
+    username: ${DATABASE_USERNAME} #neondb_owner
+    password: ${DATABASE_PASSWORD} #HPX6oUdLnR1G
     pool:
       max-size: 20
       min-size: 5
