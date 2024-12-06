@@ -1,0 +1,115 @@
+Gestión de Imágenes
+
+# Descargar una imagen
+docker pull nombre_imagen:tag
+
+# Listar imágenes locales
+docker images
+docker image ls
+
+# Eliminar una imagen
+docker rmi nombre_imagen
+docker image rm nombre_imagen
+
+# Construir una imagen desde un Dockerfile
+docker build -t nombre_imagen:tag .
+
+Gestión de Contenedores
+
+# Crear y ejecutar un contenedor
+docker run nombre_imagen
+docker run -d nombre_imagen  # Modo desatendido
+docker run -p puerto_host:puerto_contenedor nombre_imagen  # Mapeo de puertos
+docker run -e VARIABLE_ENTORNO=valor nombre_imagen  # Configurar variables de entorno
+docker run --name nombre_contenedor nombre_imagen  # Asignar nombre personalizado
+
+# Listar contenedores
+docker ps  # Contenedores en ejecución
+docker ps -a  # Todos los contenedores
+
+# Detener un contenedor
+docker stop nombre_contenedor
+docker stop ID_contenedor
+
+# Iniciar un contenedor detenido
+docker start nombre_contenedor
+
+# Eliminar un contenedor
+docker rm nombre_contenedor
+
+# Ver logs de un contenedor
+docker logs nombre_contenedor
+docker logs -f nombre_contenedor  # Seguimiento en tiempo real
+
+Docker Compose (Microservicios)
+
+# Levantar servicios definidos en docker-compose.yml
+docker-compose up
+docker-compose up -d  # Modo desatendido
+
+# Detener servicios
+docker-compose down
+
+# Reconstruir imágenes
+docker-compose build
+
+# Ver estado de servicios
+docker-compose ps
+
+# Escalar un servicio
+docker-compose up --scale servicio=numero_instancias
+
+
+Redes en Docker
+
+# Listar redes
+docker network ls
+
+# Crear red personalizada
+docker network create nombre_red
+
+# Conectar un contenedor a una red
+docker network connect nombre_red nombre_contenedor
+
+# Crear red para microservicios
+docker network create microservicios_network
+
+
+Volúmenes y Persistencia
+
+# Crear un volumen
+docker volume create nombre_volumen
+
+# Listar volúmenes
+docker volume ls
+
+# Montar un volumen en un contenedor
+docker run -v nombre_volumen:/ruta/contenedor nombre_imagen
+
+# Eliminar volumen
+docker volume rm nombre_volumen
+
+
+
+Ejemplo de Flujo para Microservicios
+
+# 1. Construir imagen
+docker build -t mi_microservicio .
+
+# 2. Crear red
+docker network create microservicios_network
+
+# 3. Ejecutar contenedor con red personalizada
+docker run -d --name servicio1 --network microservicios_network mi_microservicio
+
+# 4. Usar docker-compose para orquestar
+version: '3'
+services:
+  servicio1:
+    build: ./servicio1
+    ports:
+      - "8080:8080"
+  servicio2:
+    build: ./servicio2
+    depends_on:
+      - servicio1

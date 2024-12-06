@@ -1,0 +1,178 @@
+Instalación y Configuración Inicial
+# Instalar Minikube
+brew install minikube  # Mac
+# Windows/Linux: Sigue las instrucciones oficiales de instalación
+
+# Iniciar cluster de Minikube
+minikube start
+
+# Verificar estado del cluster
+minikube status
+
+# Detener cluster
+minikube stop
+
+# Eliminar cluster
+minikube delete
+
+
+Gestión de Kubectl (Comando principal de Kubernetes)
+
+# Ver configuración del cluster
+kubectl config view
+
+# Ver nodos del cluster
+kubectl get nodes
+
+# Ver información detallada de los nodos
+kubectl describe nodes
+
+# Cambiar contexto
+kubectl config use-context minikube
+
+
+Despliegue de Aplicaciones
+
+
+# Crear despliegue
+kubectl create deployment nombre-app --image=imagen-docker
+
+# Exponer servicio
+kubectl expose deployment nombre-app --type=LoadBalancer --port=8080
+
+# Listar despliegues
+kubectl get deployments
+
+# Listar servicios
+kubectl get services
+
+# Ver detalles de un despliegue
+kubectl describe deployment nombre-app
+
+# Escalar un despliegue
+kubectl scale deployment nombre-app --replicas=3
+
+Gestión de Pods
+# Listar pods
+kubectl get pods
+
+# Ver detalles de pods
+kubectl describe pods
+
+# Logs de un pod
+kubectl logs nombre-pod
+
+# Ejecutar comando dentro de un pod
+kubectl exec -it nombre-pod -- /bin/bash
+
+# Eliminar un pod
+kubectl delete pod nombre-pod
+
+Configuración con YAML
+# Aplicar configuración desde archivo YAML
+kubectl apply -f archivo-configuracion.yaml
+
+# Eliminar recursos definidos en YAML
+kubectl delete -f archivo-configuracion.yaml
+
+
+Ejemplo de Archivo YAML de Despliegue
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mi-aplicacion
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: mi-app
+  template:
+    metadata:
+      labels:
+        app: mi-app
+    spec:
+      containers:
+      - name: mi-contenedor
+        image: mi-imagen:v1
+        ports:
+        - containerPort: 8080
+
+
+Comandos de Minikube Útiles
+# Abrir dashboard de Kubernetes
+minikube dashboard
+
+# Acceder a servicio
+minikube service nombre-servicio
+
+# Ver dirección IP del cluster
+minikube ip
+
+# Habilitar complementos
+minikube addons list
+minikube addons enable nombre-addon
+
+
+Gestión de Namespaces
+# Listar namespaces
+kubectl get namespaces
+
+# Crear namespace
+kubectl create namespace mi-namespace
+
+# Usar un namespace específico
+kubectl get pods -n mi-namespace
+
+
+Actualización y Rollback
+# Actualizar imagen de despliegue
+kubectl set image deployment/nombre-app contenedor=nueva-imagen
+
+# Deshacer actualización
+kubectl rollout undo deployment/nombre-app
+
+# Ver historial de revisiones
+kubectl rollout history deployment/nombre-app
+
+
+
+
+
+
+
+Ejemplo Completo de Microservicio
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mi-microservicio
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: mi-servicio
+  template:
+    metadata:
+      labels:
+        app: mi-servicio
+    spec:
+      containers:
+      - name: mi-contenedor
+        image: mi-imagen:v1
+        ports:
+        - containerPort: 8080
+        env:
+        - name: VARIABLE_ENTORNO
+          value: "valor"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mi-servicio
+spec:
+  type: LoadBalancer
+  selector:
+    app: mi-servicio
+  ports:
+  - port: 80
+    targetPort: 8080
