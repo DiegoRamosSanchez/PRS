@@ -8,7 +8,7 @@ import { FamilyDTO } from '../familia/familiaDto';
   providedIn: 'root'
 })
 export class FamilyService {
-  private apiUrl = 'http://localhost:8080/api/families';
+  private apiUrl = 'https://stunning-spork-jjq45w465prqcj97-8080.app.github.dev/api/families';
 
   constructor(private http: HttpClient) { }
 
